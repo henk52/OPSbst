@@ -1,0 +1,80 @@
+#platform=x86, AMD64, or Intel EM64T
+#version=DEVEL
+# Install OS instead of upgrade
+install
+# Firewall configuration
+firewall --disabled
+# SELinux configuration
+selinux --disabled
+# Use text mode install
+text
+# Do not configure the X Window System
+skipx
+# Reboot after installation
+reboot
+
+
+# Keyboard layouts
+keyboard '{$KS_KEYBOARD}'
+# Root password
+rootpw --iscrypted {$EncryptedPassword}
+# System timezone
+timezone {$time_zone} --isUtc
+# System language
+lang en_US
+# Choose the installation media
+{$KS_INSTALL_SOURCE_SELECTION} 
+
+{$KS_REPO_SOURCE_SELECTION}
+
+# Network information
+#  See: http://docs.fedoraproject.org/en-US/Fedora/20/html/Installation_Guide/s1-kickstart2-options.html
+network  --bootproto=dhcp
+# Fedora 20 wont work with '--device=eth0'
+#network  --bootproto=dhcp --device=eth0
+# System authorization information
+auth  --useshadow  --passalgo=sha512
+
+# System bootloader configuration
+bootloader --location=mbr
+# Clear the Master Boot Record
+zerombr
+# Partition clearing information
+clearpart --all --initlabel 
+# Disk partitioning information
+part swap --fstype="swap" --size=1024
+part / --fstype="ext4" --grow --size=1
+
+%packages
+@standard
+
+
+{ if ( $#PackageList != -1 ) {
+    foreach my $szLine (@PackageList) {
+      $OUT .= $szLine;
+    }
+  }
+}
+%end
+
+{ if ( $#PreList != -1 ) {
+    $OUT .= "%pre\n";
+    foreach my $szLine (@PreList) {
+      $OUT .= $szLine;
+    }
+    $OUT .= "%end\n";
+  }
+}
+
+{ if ( $#PostList != -1 ) {
+    $OUT .= "%post\n";
+    foreach my $szLine (@PostList) {
+      $OUT .= $szLine;
+    }
+    $OUT .= "%end\n";
+  }
+}
+
+
+
+

@@ -1,0 +1,4 @@
+
+all:
+	rdoc -x doc
+

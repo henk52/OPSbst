@@ -1,0 +1,122 @@
+TODO V Automatically do chown on the tftpboot files and dir To a programmable owner, default to nobody.
+TODO V Automatically do chown on the pxelinux.cfg boot conf files and dir To a programmable owner, default to nobody.
+TODO V update /etc/exports when adding NFS to the whole deal.
+TODO V Make a script, that can be used with VirtualboxManager to run through all the distributions I have
+  - So I can test each of the releases, with both NFS and HTTP. Possibly use nc to send a message to the script that is handling the verification. So the installation post script will send the infor on release etc.
+TODO V Write a ReadMe.txt with an example of how this tools should be used.
+TODO N Provide guidance on the use NFS shares and WEB.
+
+TODO V Create a git project that is a set of scripts to handle the yumdownload operations.
+TODO N Make LoadVariableFromEnvironment() a common function.
+
+What is then next?
+ - Write the Puppet module for lighttpd
+ - create the router entry for Praneetha?
+ - lxc stuff
+
+
+This tool must be able to integrate with puppet. But this must be able to work even when puppet is not installed.
+  So the output files should be yaml (or json?)
+
+Also support removal of ISOs
+ This would mean I would have to be able to see which mac address mappings use that ISO import as baseline, and aske for those to be removed.
+ So being able to remove or move MAC addresses based on baseline OS/ISO would be nice.
+
+# Guiding moto: Do one thing and do it well.
+
+
+# Entries that might be relevant.
+#  Description.
+#  ComboReleaseVersion, possibly a range or comma seperated list.
+#  UnderlyingDistro
+#  DistroReleaseVersion
+$f_hSupportedComboTypes = Hash.new ()
+$f_hSupportedComboTypes["DIPM"] = "REDHAT"
+
+# I'd like to support:
+#  - Linux
+#    - Fedora
+#    - Redhat
+#  - DIPM
+#  - ESXi
+#  - Solaris
+#    - x86
+#    - Sparc
+#    - Ubuntu
+#  - FreeBSd
+
+
+
+# import --distro
+#  --distro: redhat | freebsd | ubuntu | solaris_sparc | solaris_sparc | esxi
+#  --complicated:  dips | dipm | dipc
+#   Complicated distribution are things that are based on a distro, but then have additional stuff.
+#  --arch: x86 | sparc
+
+#  Maybe each distro and complicated should be defined in an xml file.
+#    Later json/yaml could be supported.
+
+# What this script needs to do:
+#  - Provide the boot kernel: vmlinuz initrd(for linux) All those files for ESXi
+#    The boot kernels needs to go intto the tftboot subdirs.
+#      Would it be enough to have one for each major.minor version or would it have to fit to the kernel level?
+#  - Packages
+#  - repodata
+#  - base kickstart script?
+# I may also need to provide the major/minor versions. release number.
+#
+
+# Where to put the data:
+#  - get the target directories from:
+#    - hardcoded in this script.
+#    - config file in /opt/OPSbst/etc/config (maybe put this in /etc)
+#    - hiera
+#    - ENV
+#    - CLI
+
+
+# TODO Have some generic method for generating a kickstart script from a generic requirement?
+
+---+ Roles configuraiton file.
+The concept is that we can configure a role bye
+
+Writing a configuration file:
+role_NAME_OF_ROLE.txt
+%PRESTART%
+# This gets copied into the %pre/%end section of the kickstart file.
+%PREEND%
+
+%PACKAGELISTSTART%
+%PACKAGELISTEND%
+
+%POSTSTART%
+%POSTEND%
+
+You cannot net the sections.
+Every section must have both a start and an end tag.
+You can have multiple blocks of each start/end tags.
+You do not need to define all start/end blocks.
+
+---++ Paths to search for the files:
+
+/opt/OPSbst/roles
+/var/OPSbst/roles
+
+---++ Expected roles and their purpose'
+
+If nothing else is noted, then the roles are installed using puppet.
+* vagrant: Installs a vagrant box, with nothing else.
+* kvm: Install a base hypervisor
+* cloudstack: Install a cloudstack server.
+* bst: basic boot server (boot server tool).
+* esxi: Install a vmware hypervisor.
+
+---++ Example
+
+--role yumdownload
+
+Will look for: 
+ /opt/OPSbst/roles/yumdownload.txt
+ /var/OPSbst/roles/yumdownload.txt
+
+

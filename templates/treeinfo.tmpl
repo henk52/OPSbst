@@ -1,0 +1,15 @@
+[general]
+name = {$distro}-{$release}
+family = {$distro}
+timestamp = {$timestamp}
+variant = {$distro}
+version = {$release}
+packagedir = 
+arch = {$arch}
+
+[stage2]
+mainimage = LiveOS/squashfs.img
+
+[checksums]
+repodata/repomd.xml = sha256:{$szRepomdXmlSha256}
+

@@ -1,0 +1,17 @@
+# This file is for doing unit testing of the RoleFileHandler.pm
+
+%PREBEGIN%
+SinglePreLine
+%PREEND%
+
+%PACKAGELISTBEGIN%
+Packet1
+Packet2
+%PACKAGELISTEND%
+
+
+%POSTBEGIN%
+PostLine 1
+PostLine 2
+%POSTEND%
+

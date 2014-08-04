@@ -1,0 +1,43 @@
+---
+Distributions:
+- Versions:
+  - architechture:
+    - arch: x86_64
+      relative_base_kickstart_file: /configs/fedora19_base.cfg
+      relative_boot_kernel_path: /var/tftp/fedora19_x86_64
+      relative_install_image_path: /images/fedora-19
+    - arch: i686
+      relative_base_kickstart_file: /configs/ks_fedora_19_i686.cfg
+      relative_boot_kernel_path: /var/tftp/fedora_19_i686
+      relative_extra_repo_path: fedora_19_i686
+      relative_install_image_path: /configs/images/fedora_19_i686
+    release: 19
+  - architechture:
+    - arch: x86_64
+      relative_base_kickstart_file: /configs/ks_fedora_20_x86_64.cfg
+      relative_boot_kernel_path: /var/tftp/fedora_20_x86_64
+      relative_install_image_path: /images/fedora_20_x86_64
+    release: 20
+  - architechture:
+    - arch: x86_64
+      relative_base_kickstart_file: /configs/ks_fedora_18_x86_64.cfg
+      relative_boot_kernel_path: /var/tftp/fedora_18_x86_64
+      relative_install_image_path: /configs/images/fedora_18_x86_64
+    release: '18'
+  distro: fedora
+- Versions:
+  - architechture:
+    - arch: x86_64
+      relative_base_kickstart_file: /configs/redhat61_base.cfg
+      relative_boot_kernel_path: /var/tftp/rhel61_x86_64
+      relative_install_image_path: /images/rhel61_x86_64
+    release: 61
+  distro: redhat
+- Versions:
+  - architechture:
+    - arch: x86_64
+      relative_base_kickstart_file: /configs/ks_gentoo_14_x86_64.cfg
+      relative_boot_kernel_path: /var/tftp/gentoo_14_x86_64
+      relative_install_image_path: /images/gentoo_14_x86_64
+    release: '14'
+  distro: gentoo

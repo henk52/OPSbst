@@ -1,0 +1,5 @@
+---
+KernelFiles:
+ - vmlinuz
+ - initrd.img
+RelativeKernelSource: isolinux

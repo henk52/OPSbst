@@ -1,0 +1,3 @@
+%PACKAGELISTBEGIN%
+# The generated ks.cfg will be overwritten by the generated/extracted by the D82.cfg
+%PACKAGELISTEND%

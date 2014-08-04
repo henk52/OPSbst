@@ -1,0 +1,5 @@
+---
+KernelFiles:
+ - vmlinuz
+ - initrd.gz
+RelativeKernelSource: install
