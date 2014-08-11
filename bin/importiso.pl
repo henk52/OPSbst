@@ -14,6 +14,7 @@ use Data::Dumper;
 
 #TODO C add a relative path to the script dir and use it as an include path form modules.
 
+use BootServerConfigFile;
 use CliOptionHandling;
 use CommandOptionHandling;
 use IsoInfoFile;
@@ -301,6 +302,10 @@ sub LoadVariableFromEnvironment {
                 #     # #     #   ###   #     #
 
 # ============================================================
+
+# Load the Configurations from the config_boot_server_tool.yaml
+BscPutConfigDataInHash(\%f_hFinishedValues);
+
 
 LoadVariableFromEnvironment(\%f_hFinishedValues);
 

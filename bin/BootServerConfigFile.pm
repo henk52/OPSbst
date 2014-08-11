@@ -11,7 +11,7 @@ use Data::Dumper;
 use YAML::XS qw/LoadFile Dump/;
 
 
-$VERSION = 0.1.0;
+$VERSION = 0.2.0;
 @ISA = ('Exporter');
 
 # List the functions and var's that must be available.
@@ -20,7 +20,14 @@ $VERSION = 0.1.0;
                 &BscPutConfigDataInHash
             );
 
-my $f_szBootServerConfigFile = "/opt/OPSbst/etc/config_boot_server_tool.yaml";
+# TODO V enable reading the OPSbst yaml first then overload with the one in /etc.
+my $f_szYamlConfigFileName = "config_boot_server_tool.yaml";
+my $f_szBootServerConfigFile;
+if ( -e "/etc/$f_szYamlConfigFileName" ) {
+  $f_szBootServerConfigFile = "/etc/$f_szYamlConfigFileName";
+} else {
+  $f_szBootServerConfigFile = "/opt/OPSbst/etc/$f_szYamlConfigFileName";
+}
 
 # -----------------------------------------------------------------
 # TODO V Have an optional filename parm, for an optional path to the config file.
