@@ -1,6 +1,11 @@
 #!/usr/bin/perl -w
 
 use strict;
+use FindBin;
+
+BEGIN {
+  push( @INC, "$FindBin::RealBin" );    ## Path to local modules
+}
 
 use Text::Template;
 use Data::Dumper;
