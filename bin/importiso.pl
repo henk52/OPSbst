@@ -44,6 +44,7 @@ my %f_hDefaultValues;
 $f_hDefaultValues{"BS_HOME_DIRECTORY"} = "/home/vagrant";
 $f_hDefaultValues{"BS_TMP_MOUNT_POINT"} = $f_hDefaultValues{"BS_HOME_DIRECTORY"} . "/mnt";
 $f_hDefaultValues{"BS_BOOT_KERNEL_BASE_DIRECTORY"} = "/var/tftp";
+$f_hDefaultValues{"BS_BOOT_KERNEL_BASE_DIRECTORY_OWNER"} = "nobody";
 $f_hDefaultValues{"BS_IMAGE_BASE_DIRECTORY"} = "/var/ks/images";
 $f_hDefaultValues{"BS_CONFIG_BASE_DIRECTORY"} = "/var/ks/configs";
 
@@ -51,6 +52,7 @@ my %f_hFinishedValues;
 $f_hFinishedValues{"BS_HOME_DIRECTORY"}             = $f_hDefaultValues{"BS_HOME_DIRECTORY"};
 $f_hFinishedValues{"BS_TMP_MOUNT_POINT"}            = $f_hDefaultValues{"BS_TMP_MOUNT_POINT"};
 $f_hFinishedValues{"BS_BOOT_KERNEL_BASE_DIRECTORY"} = $f_hDefaultValues{"BS_BOOT_KERNEL_BASE_DIRECTORY"};
+$f_hFinishedValues{"BS_BOOT_KERNEL_BASE_DIRECTORY_OWNER"} = $f_hDefaultValues{"BS_BOOT_KERNEL_BASE_DIRECTORYi_OWNER"};
 $f_hFinishedValues{"BS_IMAGE_BASE_DIRECTORY"}       = $f_hDefaultValues{"BS_IMAGE_BASE_DIRECTORY"};
 $f_hFinishedValues{"BS_CONFIG_BASE_DIRECTORY"}      = $f_hDefaultValues{"BS_CONFIG_BASE_DIRECTORY"};
 $f_hFinishedValues{"BS_DISTRO_CONFIGURATION_FILE"}  = "/var/ks/distros.yaml";
@@ -168,6 +170,7 @@ sub CopyBootKernel {
       #print "DDD szKernelFile: ${szKernelFile}\n";
       DieIfExecuteFails("cp $hFinishedValues{'BS_TMP_MOUNT_POINT'}/$hFinishedValues{'RelativeKernelSource'}/${szKernelFile} $szDestinationDirectory");
     }
+    DieIfExecuteFails("chown -R $hFinishedValues{'BS_BOOT_KERNEL_BASE_DIRECTORY_OWNER'} $szDestinationDirectory");
   } else {
     # TODO C Unless clobber is in effect then if the files exists at the target then fail.
     print "WWW Boot kernel files not copied, since target directory exists:  $hFinishedValues{'BS_BOOT_KERNEL_BASE_DIRECTORY'}/${szBootKernelTarget}\n";

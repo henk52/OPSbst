@@ -1,0 +1,1 @@
+TODO V import.pl should chown -R /var/tftp/fedora_20_x86_64  when creating the boot thingy.
