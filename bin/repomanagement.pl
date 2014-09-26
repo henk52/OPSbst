@@ -128,7 +128,7 @@ sub CommandHandlingForAdd {
   my $refhCombinedData = shift;
 
   my %hCombinedData = %{$refhCombinedData};
-  print Dumper(\%hCombinedData);
+  #print Dumper(\%hCombinedData);
 
   my $szTargetDirectory = GetAbsolutePathToDestinationRepoDirForDistroOptionallyWithTimeStamp($refhCombinedData);
 
@@ -150,7 +150,7 @@ sub CommandHandlingForAdd {
     if ( $szKey =~ /^--/ ) {
       my $szNewKeyName = $szKey;
       $szNewKeyName =~ s/^--//;
-      print "DDD $szKey => $szNewKeyName\n";
+#      print "DDD $szKey => $szNewKeyName\n";
       $hCombinedData{$szNewKeyName} = $hCombinedData{$szKey};
     }
   }
@@ -376,10 +376,8 @@ if ( ! exists($hDistroKeyData{relative_boot_kernel_path}) ) {
   die("!!! Couldn't find $hPopulatedOptionList{'--distro'} $hPopulatedOptionList{'--release'} $hPopulatedOptionList{'--arch'} in $f_hFinishedValues{BS_DISTRO_CONFIGURATION_FILE}");
 }
 
-my $szTgzTmpDir;
-
-# Set to 1 if the fusemount -u needs to be run on szTgzTmpDir.
-my $bUnmountIso = 0;
+# If set the fusemount -u needs to be run.
+my $szIsoMntDir;
 
 #  If the input is a .tgz then extract the files to a random tmp dir.
 if ( exists($hPopulatedOptionList{'--srctgz'}) ) {
@@ -402,7 +400,7 @@ if ( exists($hPopulatedOptionList{'--srciso'}) ) {
 
   print "III mount ISO file on tmpdir: $szTempDir\n";
   DieIfExecuteFails("fuseiso $hPopulatedOptionList{'--srciso'} $szTempDir");
-  $bUnmountIso = 1;
+  $szIsoMntDir = $szTempDir;
 
   # set --srcdir
   $hPopulatedOptionList{'--srcdir'} = "$szTempDir/Packages";
@@ -427,13 +425,8 @@ if ( $szCommand eq "add" ) {
   die("!!! Command not recognized: $szCommand");
 }
 
-print "XXXXXXXXXXXXXX bUnmountIso: $bUnmountIso\n";
-if ( $bUnmountIso == 1 ) {
+if ( defined($szIsoMntDir) ) {
   print "III Unmount the ISO\n";
-  DieIfExecuteFails("fusermount -u $szTgzTmpDir");
+  DieIfExecuteFails("fusermount -u $szIsoMntDir");
 }
 
-if ( defined($szTgzTmpDir) ) {
-  print "III remove the tmpdir.\n";
-  unlink($szTgzTmpDir) || die("!!! unable to remove: $szTgzTmpDir $!");
-}
