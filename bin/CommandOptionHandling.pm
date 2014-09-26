@@ -69,7 +69,8 @@ sub DieOnSemanticErrorsOfOptionsForCommand {
 
 
   foreach my $szOptionName (keys $hOptionInteractionForCommand{$szCommand}{"OptionList"} ) { 
-#print Dumper($hOptionInteractionForCommand{$szCommand}{"OptionList"}{$szOptionName});
+#   print "DDD OptionName: $szOptionName for Command: $szCommand\n";
+#   print Dumper($hOptionInteractionForCommand{$szCommand}{"OptionList"}{$szOptionName});
 
     # If the options is required, and not yet set, then set it if possible.
 #    if ( IsInArray("required", @{$hOptionInteractionForCommand{$szCommand}{"OptionList"}{szOptionName}}) ) {
@@ -102,13 +103,14 @@ sub DieOnSemanticErrorsOfOptionsForCommand {
         if ( ! exists($hProvidedOptions{$szOptionName}) ) {
           my $bOneOfTheMutuallyExcliveOptionFound = 0;
           foreach my $szExcludeOption (@{$hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"${szOptionName}OneOf"}{"exclude"}}) {
+#            print "DDD OptionName: $szOptionName ExcludeOption: $szExcludeOption\n";
             if ( exists($hProvidedOptions{$szExcludeOption}) ) {
               $bOneOfTheMutuallyExcliveOptionFound = 1;
             }
           } # end foreach.
           if ( ! $bOneOfTheMutuallyExcliveOptionFound ) {
             my $szOtherOptionsList = join(", ", @{$hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"${szOptionName}OneOf"}{"exclude"}}); # .join(",")
-            die("!!! one of the mutually exclusive options must be specified: ${szOptionName}, ${szOtherOptionsList}")
+            confess("!!! one of the mutually exclusive options must be specified: ${szOptionName}, ${szOtherOptionsList}")
           }
         }
       }

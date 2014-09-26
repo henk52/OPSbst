@@ -25,6 +25,7 @@ use XmlIf;
 # sudo /opt/OPSbst/bin/repoimport.pl  --distro fedora --release 20 --srcdir /tmp/erepo
 
 #  clear; sudo ./repomanagement.pl add --distro fedora --release 20 --srctgz /vagrant/f20.tgz --timestamp 20140514
+#  clear; sudo ./repomanagement.pl add --distro centos --release 65 --srciso CentOS-6.5-x86_64-bin-DVD2.iso
  
 
 
@@ -60,6 +61,7 @@ AddValidOption(\%f_hValidOption, "--distro",   [ $f_szAddCommand, $f_szImportCom
 AddValidOption(\%f_hValidOption, "--release",  [ $f_szAddCommand, $f_szImportCommand ], $nHaveParameter, "Release ID, e.g. '20' or '10u8'", undef);
 AddValidOption(\%f_hValidOption, "--srcdir",   [ $f_szAddCommand, $f_szImportCommand ], $nHaveParameter, "The directory with the downloaded RPM files.", undef);
 AddValidOption(\%f_hValidOption, "--srctgz",   [ $f_szAddCommand ], $nHaveParameter, "The TGZ with the downloaded RPM files.", undef);
+AddValidOption(\%f_hValidOption, "--srciso",   [ $f_szAddCommand ], $nHaveParameter, "The ISO with the RPM files.", undef);
 AddValidOption(\%f_hValidOption, "--timestamp",[ $f_szAddCommand, $f_szImportCommand ], $nHaveParameter, "YYYYMMDD, e.g. 20140514.", undef);
 
 
@@ -92,12 +94,16 @@ $f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--distro"}    = "requ
 $f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--release"}   = "required";
 $f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--srcdir"}    = "OneOf";
 $f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcdirOneOf"} = {};
-$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcdirOneOf"}{"exclude"} = [ "--srctgz" ];
+$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcdirOneOf"}{"exclude"} = [ "--srctgz", "--srciso" ];
 $f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcdirOneOf"}{"necessity"} = "required";
 $f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--srctgz"} = "OneOf";
 $f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srctgzOneOf"} = {};
-$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srctgzOneOf"}{"exclude"} = [ "--srcdir" ];
+$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srctgzOneOf"}{"exclude"} = [ "--srcdir", "--srciso" ];
 $f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srctgzOneOf"}{"necessity"} = "required";
+$f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--srciso"} = "OneOf";
+$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcisoOneOf"} = {};
+$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcisoOneOf"}{"exclude"} = [ "--srcdir", "--srctgz" ];
+$f_hOptionInteractionForCommand{$szCommand}{"OptionInfo"}{"--srcisoOneOf"}{"necessity"} = "required";
 $f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--timestamp"} = "required";
 
 #$f_hOptionInteractionForCommand{$szCommand}{"OptionList"}{"--filelist"} = "required";
@@ -122,6 +128,7 @@ sub CommandHandlingForAdd {
   my $refhCombinedData = shift;
 
   my %hCombinedData = %{$refhCombinedData};
+  print Dumper(\%hCombinedData);
 
   my $szTargetDirectory = GetAbsolutePathToDestinationRepoDirForDistroOptionallyWithTimeStamp($refhCombinedData);
 
@@ -133,8 +140,10 @@ sub CommandHandlingForAdd {
   # if this is an update, clean the dir.
   `rm -f $szTargetDirectory/*.rpm`;
 
+  print "III Copy RPMs: cp $hCombinedData{'--srcdir'}/*.rpm $szTargetDirectory\n";
   DieIfExecuteFails("cp $hCombinedData{'--srcdir'}/*.rpm $szTargetDirectory");
 
+  print "III Create the repodata.\n";
   DieIfExecuteFails("cd $szTargetDirectory; createrepo .");
 
   foreach my $szKey (keys %hCombinedData) {
@@ -369,6 +378,8 @@ if ( ! exists($hDistroKeyData{relative_boot_kernel_path}) ) {
 
 my $szTgzTmpDir;
 
+# Set to 1 if the fusemount -u needs to be run on szTgzTmpDir.
+my $bUnmountIso = 0;
 
 #  If the input is a .tgz then extract the files to a random tmp dir.
 if ( exists($hPopulatedOptionList{'--srctgz'}) ) {
@@ -381,6 +392,20 @@ if ( exists($hPopulatedOptionList{'--srctgz'}) ) {
 
   # set --srcdir
   $hPopulatedOptionList{'--srcdir'} = "$szTempDir/erepo";
+}
+
+#  If the input is an ISO
+if ( exists($hPopulatedOptionList{'--srciso'}) ) {
+  # create a tmpdir
+  my $szTempDir = tempdir( CLEANUP => 1 );
+  #print "!!! tmpdir: $szTempDir\n";
+
+  print "III mount ISO file on tmpdir: $szTempDir\n";
+  DieIfExecuteFails("fuseiso $hPopulatedOptionList{'--srciso'} $szTempDir");
+  $bUnmountIso = 1;
+
+  # set --srcdir
+  $hPopulatedOptionList{'--srcdir'} = "$szTempDir/Packages";
 }
 
 # Validate that the source dir exists.
@@ -402,7 +427,13 @@ if ( $szCommand eq "add" ) {
   die("!!! Command not recognized: $szCommand");
 }
 
+print "XXXXXXXXXXXXXX bUnmountIso: $bUnmountIso\n";
+if ( $bUnmountIso == 1 ) {
+  print "III Unmount the ISO\n";
+  DieIfExecuteFails("fusermount -u $szTgzTmpDir");
+}
 
 if ( defined($szTgzTmpDir) ) {
+  print "III remove the tmpdir.\n";
   unlink($szTgzTmpDir) || die("!!! unable to remove: $szTgzTmpDir $!");
 }
