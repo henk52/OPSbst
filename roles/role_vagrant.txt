@@ -9,24 +9,39 @@ git
 yum-utils
 wget
 perl-YAML-LibYAML
+# Tools that I often use.
+mc
+strace
+tcpdmp
+fuseiso
+fuse
 %PACKAGELISTEND%
+
+%POSTBEGIN%
+#Get the hiera module and write the default hiera configuration.
+cd /etc/puppet/modules
+git clone http://10.1.233.3:/git/henk52-hieraconf.git hieraconf
+puppet apply /etc/puppet/modules/hieraconf/tests/init.pp
+cd /etc/puppet/data
+wget http://10.1.233.3:/storage/puppet/defaults.yaml
+%POSTEND%
+
+%POSTBEGIN%
+# Configure the repository configuration.
+cd /etc/puppet/modules
+git clone http://10.1.233.3:/git/henk52-repo.git repo
+puppet apply /etc/puppet/modules/repo/tests/init.pp 
+%POSTEND%
 
 %POSTBEGIN%
 # Getting and executing the puppet module for the vagrant guest.
 cd /etc/puppet/modules
-git clone http://10.1.3.2:/git/vagrantguest.git vagrantguest
+git clone http://10.1.233.3:/git/vagrantguest.git vagrantguest
 puppet apply /etc/puppet/modules/vagrantguest/manifests/virtual_box_client.pp
 %POSTEND%
 
 
 %POSTBEGIN%
-# Install the proxy env module, but do no apply it.
-cd /etc/puppet/modules
-git clone http://10.1.3.2:/git/proxy_server_env proxy_server_env
 %POSTEND%
 
-
-
-%POSTBEGIN%
-%POSTEND%
 
