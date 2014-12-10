@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Introduction
 
 ## Purpose
@@ -71,3 +72,24 @@ For erlang:
 For SW router:
 * quagga
 
+=======
+henk52-bst
+==========
+
+Puppet module for configuring the OPSbst; Simple Boot server administration tool.
+
+This is the bst module.
+
+License
+-------
+
+
+Contact
+-------
+
+
+Support
+-------
+
+Please log tickets and issues at our [Projects site](http://projects.example.com)
+>>>>>>> 8161ea4b115fefeb810024d4f2335c5547ca7104
