@@ -1,0 +1,42 @@
+# Theses comments will not be copied over
+#  because they are not inside one of the begin-end tags.
+
+%PACKAGELISTBEGIN%
+# vagrant related packages.
+puppet
+augeas
+git
+yum-utils
+wget
+perl-YAML-LibYAML
+# Tools that I often use.
+mc
+strace
+tcpdmp
+fuseiso
+fuse
+%PACKAGELISTEND%
+
+%POSTBEGIN%
+#Get the hiera module and write the default hiera configuration.
+cd /etc/puppet/modules
+git clone http://10.1.233.3:/git/henk52-hieraconf.git hieraconf
+puppet apply /etc/puppet/modules/hieraconf/tests/init.pp
+cd /etc/puppet/data
+wget http://10.1.233.3:/storage/puppet/defaults.yaml
+%POSTEND%
+
+%POSTBEGIN%
+# Configure the repository configuration.
+cd /etc/puppet/modules
+git clone http://10.1.233.3:/git/henk52-repo.git repo
+puppet apply /etc/puppet/modules/repo/tests/init.pp 
+%POSTEND%
+
+%POSTBEGIN%
+# Getting and executing the puppet module for the virtualbox host installation
+cd /etc/puppet/modules
+git clone http://10.1.233.3:/git/henk52-virtualbox-host virtualbox-host
+#puppet apply /etc/puppet/modules/virtualbox-host/manifests/install.pp
+%POSTEND%
+
