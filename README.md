@@ -20,6 +20,9 @@ This tools set is used for administrating a linux bootserver.
 clear; sudo ./bootmgmt.pl update --mac 080027600349  --distro fedora --release 20  --arch x86_64  --media nfs --role yumdownload
 
 
+clear; sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 080027600349  --distro fedora --release 20  --arch x86_64  --media nfs --role virtualbox_host
+
+
 ## Running the YumDownloader to get e.g. puppet.
 1. Set-up the default boot env:
     * clear; sudo ./bootmgmt.pl add --mac 080027346180  --distro fedora --release 19 --arch x86_64 --media nfs
