@@ -102,7 +102,8 @@ sub GetAbsolutePathToDestinationRepoDirForDistro {
 
   die("!!! You must provide a reference to a hash as the parameter for GetAbsolutePathToDestinationRepoDirForDistro()") unless(defined($refhFullList));
   print "DDD GetAbsolutePathToDestinationRepoDirForDistro($refhFullList)\n";
-  my $szFullPath = GetAbsolutePathToDestinationRepoDirForDistro();
+  #my $szFullPath = GetAbsolutePathToDestinationRepoDirForDistro();
+  my $szFullPath = GetAbsolutePathToGivenDirectory($refhFullList, $refhFullList->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'});
 
   return($szFullPath);
 }

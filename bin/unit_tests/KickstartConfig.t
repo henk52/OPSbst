@@ -21,17 +21,18 @@ $hFinishedValues{"BS_RELATIVE_IMAGE_DIRECTORY"}              = "/images";
 $hFinishedValues{"InstallMedia"} = "http";
 $hFinishedValues{"relative_install_image_path"} = "gentoo_28_i386";
 ok(GenerateKickstartFile(\%hFinishedValues, "tmpKs_http.cfg"));
+unlink("tmpKs_http.cfg");
 
 $hFinishedValues{"--externalcfg"} = "unit_tests/external_ks.cfg";
 ok(KscTranslateExternalKsCfgFile(\%hFinishedValues, "tmp_Ks_http_ext.cfg"));
-
-unlink("tmpKs_http.cfg");
+unlink("tmp_Ks_http_ext.cfg");
 
 $hFinishedValues{"InstallMedia"} = "nfs";
 ok(GenerateKickstartFile(\%hFinishedValues, "tmpKs_nfs.cfg"));
+unlink("tmpKs_nfs.cfg");
 
 ok(KscTranslateExternalKsCfgFile(\%hFinishedValues, "tmp_Ks_nfs_ext.cfg"));
-unlink("tmpKs_nfs.cfg");
+unlink("tmp_Ks_nfs_ext.cfg");
 
 
 

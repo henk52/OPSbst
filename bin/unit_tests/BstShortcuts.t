@@ -34,6 +34,7 @@ $hFinishedValues{'--arch'} = "x86_64";
 
 is(GetDistroDirectoryName(\%hFinishedValues), "gentoo-14-x86_64", "Validating GetDistroDirectoryName()");
 is(GetAbsolutePathToImageRepoDataDirectory(\%hFinishedValues), "/var/ks/images/gentoo-14-x86_64/repodata", "Validating GetAbsolutePathToImageRepoDataDirectory()");
+$hFinishedValues{''} = "extrarepos";
 is(GetAbsolutePathToDestinationRepoDirForDistro(\%hFinishedValues), "/var/ks/extrarepos/gentoo-14-x86_64", "Validating GetAbsolutePathToDestinationRepoDirForDistro()");
 #is((\%hFinishedValues), "", "Validating ()");
 
