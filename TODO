@@ -1,6 +1,9 @@
 TODO V import.pl should chown -R /var/tftp/fedora_20_x86_64  when creating the boot thingy.
 TODO V Change /var/ks/distros.yaml to xml, to make it easy to read and understand.
 TODO V Update /etc/puppet/data/defaults.yaml to irename KickStartImageDirectory: to IsoImages and MirrorEv MirrorBase MirrorUpda and add KickStartIsoBaseDirectory anc KickStartExtrasDirectory
+TODO C Write a correct kickstart cfg for NFS support
+TODO C Write a correct kickstart cfg for HTTP support
+TODO V Add loggin as a default to all post commands.
 TODO Support Solaris Sparc
 TODO Support Solaris x86
 TODO Support Ubuntu

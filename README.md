@@ -12,6 +12,12 @@ This tools set is used for administrating a linux bootserver.
 * Import ISOs for boot repos.
 * 
 
+
+sudo yum install perl-Test-Harness
+sudo yum install perl-Test-Simple
+perl-Test-Simple
+
+
 ## Importing a Distro image.
 * clear; sudo ./importiso.pl --distro fedora --release 20 /vagrant/isos/Fedora-20-x86_64-DVD.iso
 * clear; sudo ./bootmgmt.pl add --mac 080027346180  --distro fedora --release 19 --arch x86_64 --media nfs

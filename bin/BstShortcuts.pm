@@ -100,6 +100,8 @@ sub GetAbsolutePathToDestinationRepoDirForDistroOptionallyWithTimeStamp {
 sub GetAbsolutePathToDestinationRepoDirForDistro {
   my $refhFullList = shift;
 
+  die("!!! You must provide a reference to a hash as the parameter for GetAbsolutePathToDestinationRepoDirForDistro()") unless(defined($refhFullList));
+  print "DDD GetAbsolutePathToDestinationRepoDirForDistro($refhFullList)\n";
   my $szFullPath = GetAbsolutePathToDestinationRepoDirForDistro();
 
   return($szFullPath);
@@ -118,6 +120,8 @@ sub UseOtherIfFirstDoesNotExistOrDie {
   my $refhFullList = shift;
   my $szPrimaryKey = shift;
   my $szSecondaryKey = shift;
+
+  print "DDD UseOtherIfFirstDoesNotExistOrDie($refhFullList, $szPrimaryKey, $szSecondaryKey)\n";
 
   if ( ! exists($refhFullList->{$szPrimaryKey}) ) {
     if ( exists($refhFullList->{$szSecondaryKey}) ) {
