@@ -24,8 +24,9 @@ use strict;
 
 
 # Define the number of tests to execute.
-use Test::More tests => 14;
+use Test::More tests => 16;
 use Test::Exception;
+use Data::Dumper;
 
 
 use XmlIf;
@@ -186,7 +187,7 @@ my $root=LoadXmlTree($f_szXmlTest);
 #
 # RETURN VALUE
 #  
-#
+#sh
 # NOTES
 #
 # 
@@ -215,6 +216,29 @@ my $root=LoadXmlTree($f_szXmlTest);
  @arAnswer=GetDataArrayByTagAndAttribute($root,"table","TableSection","Use");
   is( $#arAnswer, 1, "GetDataArrayByTagAndAttribute(" . $f_szXmlTest . ",\"table\",\"TableSection\",\"Use\")");
   is( $arAnswer[1], "Table02", "GetDataArrayByTagAndAttribute() Reading data field");
+#****
+
+
+# ----------------------------------------------------------------------------
+#****u* xml.t/utGetNodeArrayByTagAndAttribute.001
+# NAME
+#   utGetNodeArrayByTagAndAttribute
+# FUNCTION
+#  
+# OUTPUT
+#
+# NOTES
+#
+# SOURCE
+ $root=LoadXmlTree($f_szXmlTest);
+ my %hAttributes;
+ $hAttributes{'DoList'} = "y";
+ $hAttributes{'TableSection'} = "Maintenance";
+
+ @arAnswer=GetNodeArrayByTagAndAttributeList($root,"table", \%hAttributes);
+ #print Dumper(@arAnswer);
+  is( $#arAnswer, 0, "GetNodeArrayByTagAndAttributeList(" . $f_szXmlTest . ",\"table\",)");
+  is( $arAnswer[0]->string_value(), "Table03", "GetNodeArrayByTagAndAttributeList() Reading data field");
 #****
 
 unlink("xml_test.xml");

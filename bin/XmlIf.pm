@@ -46,17 +46,19 @@ package XmlIf;
 use strict;
 use vars qw(@ISA @EXPORT $VERSION);
 use XML::LibXML;
+use Data::Dumper;
 
 use Carp;
 
 use Exporter;
 
-$VERSION = 1.0.0;
+$VERSION = 1.2.0;
 @ISA = ('Exporter');
 @EXPORT = qw(
              &GetChildDataBySingleTagName
              &GetDataArrayByTagName
 	     &GetDataArrayByTagAndAttribute
+             &GetNodeArrayByTagAndAttributeList
              &GetDataHashByTagName
              &GetDataHashByTagNameAndAttribute
              &GetFirstSubNodeValues
@@ -548,6 +550,81 @@ sub GetNodeArrayByTagAndAttribute {
     } # end else if szattributename not defined.
   } # end else.
 
+  return(@arNodeList);
+} # end getnodearraybytagandattribute
+#****
+
+
+
+
+# ----------------------------------------------------------------------------
+#****f* Xml.pm/GetNodeArrayByTagAndAttributeList
+# NAME
+#   GetNodeArrayByTagAndAttributeList
+# FUNCTION
+#  Get a list of nodes, with the given tag name and the Attribute lists.
+#    If the szAttributeName is three spaces then only the szTagName is used.
+#    
+#  
+#
+# INPUTS
+#   * xmlNode -- XML Node from whence the search will start.
+#   * szTagName -- Tagname to look for.
+#   * refhAttributeHash -- List of attributes(key) and the required value of the attribute as the value.
+#
+# OUTPUT
+#
+#  
+#
+# RETURN VALUE
+#  Array of XML nodes.
+#
+# NOTES
+#
+# 
+#
+# SOURCE
+sub GetNodeArrayByTagAndAttributeList {
+  my $xmlNode           = shift;
+  my $szTagName         = shift;
+  my $refhAttributeHash = shift;
+
+
+  Confess("!!! XML node not defined.") unless(defined($xmlNode));
+  Confess("!!! TagName node not defined.") unless(defined($szTagName));
+  Confess("!!! Attribute hash reference not defined.") unless(defined($refhAttributeHash));
+
+  #print Dumper($refhAttributeHash);
+
+  my @arNodeList;
+
+  if ( ( ! defined($xmlNode) ) || ( $xmlNode == 0 ) ) {
+    confess "!!! GetNodeArrayByTagAndAttribute(): zero pointer or undefined pointer for ($szTagName)\n";
+  }
+
+  my @arEntries=$xmlNode->getElementsByTagName($szTagName);
+  # die if no entries.
+
+  foreach my $pEntry (@arEntries) {
+    my $bAllThere = 1;
+    foreach my $szAttributeName (keys %{$refhAttributeHash}) {
+      if ( $pEntry->hasAttribute($szAttributeName) ) {
+        my $szAttributeValueRead = $pEntry->getAttribute($szAttributeName);
+        if ( $szAttributeValueRead ne $refhAttributeHash->{$szAttributeName} ) {
+          # If the attribute content isn't the expected then this is not the entry we are looking for.
+          $bAllThere = 0;
+        } #endif right attr.
+      } else {
+        $bAllThere = 0;
+      } # endif has attribute.
+    } # end foreach ref
+    if ( $bAllThere == 1 ) {
+      #print "DDD FOUND\n";
+      push(@arNodeList, $pEntry);
+    }
+  } # end foreach.
+
+  #print Dumper(@arNodeList);
   return(@arNodeList);
 } # end getnodearraybytagandattribute
 #****

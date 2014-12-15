@@ -1,0 +1,21 @@
+---
+Distributions:
+- Versions:
+  - architechture:
+    - arch: x86_64
+      relative_boot_kernel_path: gentoo_14_x86_64
+      relative_install_image_path: gentoo_14_x86_64
+    release: '14'
+  distro: gentoo
+- Versions:
+  - architechture:
+    - arch: x86_64
+      relative_boot_kernel_path: fedora_18_x86_64
+      relative_install_image_path: fedora_18_x86_64
+    release: '18'
+  - architechture:
+    - arch: i686
+      relative_boot_kernel_path: fedora_19_i686
+      relative_install_image_path: fedora_19_i686
+    release: '19'
+  distro: fedora
