@@ -18,6 +18,7 @@ $VERSION = 0.1.0;
                 &AddExtraRepoPathToDistroConfigFile
                 &UpdateDistroConfigFile
                 &GetKeyPathsForDistro
+                &GetDistributionNode
             );
 
 
@@ -98,30 +99,34 @@ sub CreateArchStructure {
 # -----------------------------------------------------------------
 # ---------------
 sub GetDistributionNode {
-  my $yaml = shift;
+  my $xml = shift;
   my $refhFinishedValues = shift;
   my $szConfigFileName = shift;
 
-  my $ymlNode;
+  my $xmlNode;
 
-  if ( ! defined($yaml) ) {
+  if ( ! defined($xml) ) {
     if ( -f $szConfigFileName ) {
-      $yaml = LoadFile($szConfigFileName);
+      $xml = LoadXmlTree($szConfigFileName);
     } else {
       die("!!! Config file missing: $szConfigFileName");
     }
   }
+  my %hAttributeHash;
 
-  my @arDistroList = @{$yaml->{'Distributions'}};
+  # TODO V Die if one of the values are missing.
+  $hAttributeHash{'Name'} = $refhFinishedValues->{BootDistroName};
+  # TODO Add the  Architechture
+  # TODO Add the Version
 
-  foreach my $ymlDistro (@arDistroList) {
-    die("!!! 'BootDistroName' is not defined in the hash that was suppose to have it, could you please provide it?") unless ( exists($refhFinishedValues->{BootDistroName}) );
-    if ( $ymlDistro->{distro} eq $refhFinishedValues->{BootDistroName} ) {
-      $ymlNode = $ymlDistro;
-    }
-  }
+  my @arDistroList = GetNodeArrayByTagAndAttributeList($xml, "Distro", \%hAttributeHash);
 
-  return($ymlNode);
+  #print Dumper(@arDistroList);
+  #print Dumper(\%hAttributeHash);
+
+  $xmlNode = shift @arDistroList;
+
+  return($xmlNode);
 } # end GetDistributionNode
 
 
@@ -149,207 +154,6 @@ sub GetReleaseNode {
   return($ymlNode);
 } # end GetDistributionNode
 
-
-
-
-# -----------------------------------------------------------------
-# 
-# Parms:
-#  - yaml: The Distro yaml structure. If this is undef, then parm must be given.
-#  - refhFinishedValues: The hash with the definitions.
-#  - szConfigFileName: Optional, must be here if 'yaml' isn't defined.
-# ---------------
-sub GetArchitectureNode {
-  my $xml = shift;
-  my $refhFinishedValues = shift;
-
-  confess("!!! first parm(xml) not defined, please fix or include the (szConfigFileName) in the call.") unless(defined($xml);
-  confess("!!! second parm(refhFinishedValues) not defined, please fix the call.") unless(defined($refhFinishedValues));
-
-  my $xmlNode;
-
-  my @arDistroNodeList = GetNodeArrayByTagName($xml, "Distro");
-  foreach my $xmlDistroNode (@arDistroNodeList) {
-    
-  }
-
-  if ( defined($yaml) ) {
-    foreach my $ymlArchitecture ( @{$yaml->{architechture}} ) {
-      UseOtherIfFirstDoesNotExistOrDie($refhFinishedValues, "Arch", "architechture");
-      if ( $ymlArchitecture->{arch} eq $refhFinishedValues->{Arch} ) {
-        $ymlNode = $ymlArchitecture;
-      } # endif.
-    } # end foreach.
-  }
-
-  return($ymlNode);
-} # end GetDistributionNode
-
-
-
-
-# -----------------------------------------------------------------
-# This function will find the right part of the XML tree
-#  and read the Path entries from there.
-# ---------------
-sub GetKeyPathsForDistro {
-  my $szConfigFileName = shift;
-  my $szDistribution   = shift;
-  my $szVersionId      = shift;
-  my $szArchitecture   = shift;
-
-  my %hReturnValues;
-
-  my $refhFinishedValues = {};
-
-  $refhFinishedValues->{BootDistroName} = $szDistribution;
-  $refhFinishedValues->{BootDistroId}   = $szVersionId;
-  $refhFinishedValues->{Arch}           = $szArchitecture;
-
-  my $xml;
-
-  if ( -f $szConfigFileName ) {
-    $xml = LoadXmlTree($szConfigFileName);
-    # TODO V Test the file was actually loaded.
-
-    $xml = GetSingleChildNodeByTagAndAttributeList($xml, "Distro", $refhFinishedValues);
-  } else {
-    die("!!! Not able to read file: $szConfigFileName");
-  }
-
-  if ( defined($xml) ) {
-    $xml = GetReleaseNode($xml, $refhFinishedValues);
-  } else {
-    die("!!! Unable to find Distribition: $szDistribution");
-  }
-
-  if ( defined($xml) ) {
-    $xml = GetArchitectureNode($xml, $refhFinishedValues);
-  } else {
-    die("!!! Unable to find release of $szDistribution: $szVersionId");
-  }
-
-  if ( defined($xml) ) {
-    my @arRequiredKeyList = ( "relative_boot_kernel_path", "relative_install_image_path" );
-    foreach my $szKey (@arRequiredKeyList) {
-      if ( exists( $yaml->{$szKey} ) ) {
-        $hReturnValues{$szKey} = $yaml->{$szKey};
-      } else {
-        die("!!! Missing data entry: $szKey");
-      }
-    }
-    my @arOptionalKeyList = ( "relative_extra_repo_path" );
-    foreach my $szKey (@arOptionalKeyList) {
-      if ( exists( $yaml->{$szKey} ) ) {
-        $hReturnValues{$szKey} = $yaml->{$szKey};
-      }
-    }
-    
-  } else {
-    die("!!! Unable to find architecture of $szDistribution,$szVersionId: $szArchitecture");
-  }
-
-  #print Dumper(%hReturnValues);
-
-  return(%hReturnValues);
-} # end GetKeyPathsForDistro.
-
-
-
-
-
-# -----------------------------------------------------------------
-# Rules for the YAML file:
-#  Create the file if it does not exist.
-#  Add the Release if it does not exist.
-#  Add the architechture if it does not exist.
-#  (Add the machine (for Solaris) if it does not exits).
-# ---------------
-sub UpdateDistroConfigFile {
-  my $szConfigFileName = shift;
-  my $refhFinishedValues = shift;
-
-  my $yaml;
-
-  if ( ! -f $szConfigFileName ) {
-    # Create the structure from scratch.
-    $yaml = CreateDistributionsStructure($refhFinishedValues);
-  } else {
-    $yaml = LoadFile($szConfigFileName);
-    my $ymlDistro = GetDistributionNode($yaml, $refhFinishedValues);
-
-    if ( ! defined($ymlDistro) ) {
-      $ymlDistro = CreateDistroStructure($refhFinishedValues);
-      push(@{$yaml->{Distributions}}, $ymlDistro);
-    } else {
-      #print Dumper($ymlDistro);
-      my $ymlRelease = GetReleaseNode($ymlDistro, $refhFinishedValues);
-      if ( ! defined($ymlRelease)) {
-        $ymlRelease = CreateReleaseStructure($refhFinishedValues);
-        push(@{$ymlDistro->{Versions}}, $ymlRelease);
-      } else {
-        my $ymlArch = GetArchitectureNode($ymlRelease, $refhFinishedValues);
-        if ( ! defined($ymlArch)) {
-          my $ymlArch = CreateArchStructure($refhFinishedValues);
-          push(@{$ymlRelease->{architechture}}, $ymlArch);
-        } else {
-          print "III It should all be there !??\n";
-        }
-      }
-    }
-  }
-
-  if ( defined($yaml) ) {
-    open(YAML, ">$szConfigFileName") || die("Unable to open for write: '$szConfigFileName' - Error: $!");
-    print YAML Dump($yaml);
-    close(YAML);
-  }
-} # end UpdateDistroConfigFile.
-
-
-# -----------------------------------------------------------------
-# ---------------
-sub AddExtraRepoPathToDistroConfigFile {
-  my $szConfigFileName = shift;
-  my $refhFinishedValues = shift;
-
-  my $yaml;
-  my $ymlNode;
-
-  if ( -f $szConfigFileName ) {
-    $yaml = LoadFile($szConfigFileName);
-    # TODO V Test the file was actually loaded.
-
-    $ymlNode = GetDistributionNode($yaml, $refhFinishedValues);
-  } else {
-    die("!!! Not able to read file: $szConfigFileName");
-  }
-
-  if ( defined($ymlNode) ) {
-    $ymlNode = GetReleaseNode($ymlNode, $refhFinishedValues);
-  } else {
-    die("!!! Unable to find Distribition: $refhFinishedValues->{BootDistroName}");
-  }
-
-  if ( defined($ymlNode) ) {
-    $ymlNode = GetArchitectureNode($ymlNode, $refhFinishedValues);
-  } else {
-    die("!!! Unable to find release of $refhFinishedValues->{BootDistroName}, $refhFinishedValues->{BootDistroId}");
-  }
-
-  if ( defined($ymlNode) ) {
-    my $szIdentifier = "$refhFinishedValues->{BootDistroName}_$refhFinishedValues->{BootDistroId}_$refhFinishedValues->{Arch}";
-    $ymlNode->{relative_extra_repo_path} = "$szIdentifier";
-    if ( defined($ymlNode) ) {
-      open(YAML, ">$szConfigFileName") || die("Unable to open for write: '$szConfigFileName' - Error: $!");
-      print YAML Dump($yaml);
-      close(YAML);
-    }
-  } else {
-    die("!!! Architecture node not found for: $refhFinishedValues->{BootDistroName}, $refhFinishedValues->{BootDistroId}: $refhFinishedValues->{Arch}");
-  }
-  
-} # end AddExtraRepoPathToDistroConfigFile
 
 # This ends the perl module/package definition.
 1;

@@ -1,21 +1,19 @@
----
-Distributions:
-- Versions:
-  - architechture:
-    - arch: x86_64
-      relative_boot_kernel_path: gentoo_14_x86_64
-      relative_install_image_path: gentoo_14_x86_64
-    release: '14'
-  distro: gentoo
-- Versions:
-  - architechture:
-    - arch: x86_64
-      relative_boot_kernel_path: fedora_18_x86_64
-      relative_install_image_path: fedora_18_x86_64
-    release: '18'
-  - architechture:
-    - arch: i686
-      relative_boot_kernel_path: fedora_19_i686
-      relative_install_image_path: fedora_19_i686
-    release: '19'
-  distro: fedora
+<Distributions Version="0.1.0">
+  <Distro Name="fedora" Version="20" Architechture="x86_64">
+    <relative_boot_kernel_path>linux/releases/20/Fedora/x86_64/os</relative_boot_kernel_path>
+    <relative_install_image_path>linux/releases/20/Fedora/x86_64/os</relative_install_image_path>
+    <relative_additional_packages_path>linux/releases/20/Everything/x86_64/os</relative_additional_packages_path>
+    <relative_updates_path>linux/updates/20/x86_64</relative_updates_path>
+  </Distro>
+  <Distro Name="fedora" Version="18" Architechture="x86_64">
+    <relative_boot_kernel_path>linux/releases/18/Fedora/x86_64/os</relative_boot_kernel_path>
+    <relative_install_image_path>linux/releases/18/Fedora/x86_64/os</relative_install_image_path>
+    <relative_additional_packages_path>linux/releases/18/Everything/x86_64/os</relative_additional_packages_path>
+    <relative_updates_path>linux/updates/18/x86_64</relative_updates_path>
+  </Distro>
+
+  <Distro Name="centos" Version="65" Architechture="x86_64">
+    <relative_boot_kernel_path>centos_65_x86_64</relative_boot_kernel_path>
+    <relative_install_image_path>centos_65_x86_64</relative_install_image_path>
+  </Distro>
+</Distributions>
