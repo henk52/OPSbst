@@ -104,6 +104,7 @@ sub GetDistributionNode {
   my $szConfigFileName = shift;
 
   my $xmlNode;
+  my %hReply;
 
   if ( ! defined($xml) ) {
     if ( -f $szConfigFileName ) {
@@ -116,8 +117,8 @@ sub GetDistributionNode {
 
   # TODO V Die if one of the values are missing.
   $hAttributeHash{'Name'} = $refhFinishedValues->{BootDistroName};
-  # TODO Add the  Architechture
-  # TODO Add the Version
+  $hAttributeHash{'Architechture'} = $refhFinishedValues->{Arch};
+  $hAttributeHash{'Version'} = $refhFinishedValues->{BootDistroId};
 
   my @arDistroList = GetNodeArrayByTagAndAttributeList($xml, "Distro", \%hAttributeHash);
 
@@ -125,8 +126,14 @@ sub GetDistributionNode {
   #print Dumper(\%hAttributeHash);
 
   $xmlNode = shift @arDistroList;
+  if ( defined($xmlNode) ) {
+    $hReply{'relative_boot_kernel_path'}         = GetChildDataBySingleTagName($xmlNode, "relative_boot_kernel_path");
+    $hReply{'relative_install_image_path'}       = GetChildDataBySingleTagName($xmlNode, "relative_install_image_path");
+    $hReply{'relative_additional_packages_path'} = GetChildDataBySingleTagName($xmlNode, "relative_additional_packages_path");
+    $hReply{'relative_updates_path'}             = GetChildDataBySingleTagName($xmlNode, "relative_updates_path");
+  }
 
-  return($xmlNode);
+  return(%hReply);
 } # end GetDistributionNode
 
 

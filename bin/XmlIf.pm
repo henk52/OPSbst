@@ -604,7 +604,7 @@ sub GetNodeArrayByTagAndAttributeList {
 
   my @arEntries=$xmlNode->getElementsByTagName($szTagName);
   # die if no entries.
-  print "DDD GetNodeArrayByTagAndAttributeList() Entry candidates: $#arEntries\n";
+  #print "DDD GetNodeArrayByTagAndAttributeList() Entry candidates: $#arEntries\n";
 
   foreach my $pEntry (@arEntries) {
     my $bAllThere = 1;
