@@ -4,7 +4,7 @@ use strict;
 use Data::Dumper;
 
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 
 use XmlDistroConfigFile;
@@ -22,6 +22,9 @@ $hFinishedValues{BS_CONFIG_BASE_DIRECTORY} = "/var/ks/configs";
 my %hReply = GetDistributionNode(undef, \%hFinishedValues, "unit_tests/distros.xml");
 is($hReply{'relative_install_image_path'}, 'linux/releases/20/Fedora/x86_64/os', 'GetDistributionNode(undef, \%hFinishedValues, "unit_tests/distros.xml")');
 print Dumper(\%hReply);
+
+%hReply = GetKeyPathsForDistro("unit_tests/distros.xml", "centos", "65", "x86_64");
+is($hReply{'relative_install_image_path'}, 'centos_65_x86_64', 'GetKeyPathsForDistro("unit_tests/distros.xml", "centos", "65", "x86_64")');
 
 #ok(UpdateDistroConfigFile("t.xml", \%hFinishedValues), "Create an structure from scratch.");
 #unlink("t.xml");

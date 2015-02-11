@@ -26,6 +26,9 @@ perl-Test-Simple
 clear; sudo ./bootmgmt.pl update --mac 080027600349  --distro fedora --release 20  --arch x86_64  --media nfs --role yumdownload
 
 
+clear; sudo /opt/OPSbst/bin/bootmgmt.pl add --mac 001a4b79079e  --distro fedora --release 20  --arch x86_64  --media nfs --role virtualbox_host
+clear; sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 001a4b79079e  --distro fedora --release 20  --arch x86_64  --media nfs --role virtualbox_host
+
 clear; sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 080027600349  --distro fedora --release 20  --arch x86_64  --media nfs --role virtualbox_host
 
 

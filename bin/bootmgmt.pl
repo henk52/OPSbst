@@ -32,7 +32,7 @@ use CommandOptionHandling;
 use KickstartConfig;
 use MacAddressHandling;
 use RoleFileHandler;
-use YamlDistroConfigFile;
+use XmlDistroConfigFile;
 
 sub TRUE { return(1) };
 
@@ -177,6 +177,7 @@ sub CommandHandlingForAdd {
   $hBootConfiguration{"relative_ks_cfg_path_and_name"} = $hBootConfiguration{'BS_RELATIVE_CONFIG_DIRECTORY'};
   $hBootConfiguration{"relative_ks_cfg_path_and_name"} .= "/ks_" . GetDistroDirectoryName(\%hBootConfiguration);
 
+  #print Dumper(\%hBootConfiguration);
   my $szKickstartFile;
 
   if ( $hBootConfiguration{"InstallMedia"} eq "nfs" ) {
@@ -203,7 +204,7 @@ sub CommandHandlingForAdd {
   $szKickstartFile .= ".cfg";
 
   if ( ! -d "/$hBootConfiguration{'BS_BOOT_KERNEL_BASE_DIRECTORY'}/$hBootConfiguration{$f_szTftpBootKernelPath}" ) {
-    die("!!! Required TFTP boot path does not exist: $hBootConfiguration{$f_szTftpBootKernelPath}");
+    die("!!! Required TFTP boot path does not exist: $hBootConfiguration{$f_szTftpBootKernelPath} under /$hBootConfiguration{'BS_BOOT_KERNEL_BASE_DIRECTORY'} (defined by: BS_BOOT_KERNEL_BASE_DIRECTORY)");
   }
 
 

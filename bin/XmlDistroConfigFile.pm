@@ -9,7 +9,7 @@ use Data::Dumper;
 use BstShortcuts;
 use XmlIf;
 
-$VERSION = 0.1.0;
+$VERSION = 0.2.0;
 @ISA = ('Exporter');
 
 # List the functions and var's that must be available.
@@ -93,10 +93,34 @@ sub CreateArchStructure {
 } # end CreateArchStructure.
 
 
+# -----------------------------------------------------------------
+#GetKeyPathsForDistro(
+#                      $f_hFinishedValues{"BS_DISTRO_CONFIGURATION_FILE"},
+#                      $hPopulatedOptionList{"--distro"},
+#                      $hPopulatedOptionList{"--release"},
+#                      $hPopulatedOptionList{"--arch"},
+#                    );
+# ---------------
+sub GetKeyPathsForDistro {
+  my $szConfigFileName = shift;
+  my $szDistroName = shift;
+  my $szReleaseNumber = shift;
+  my $szArchitechture = shift;
 
+  my %hDistroValues;
+
+  $hDistroValues{'BootDistroName'} = $szDistroName;
+  $hDistroValues{'Arch'} = $szArchitechture;
+  $hDistroValues{'BootDistroId'} = $szReleaseNumber;
+  return(GetDistributionNode(undef, \%hDistroValues, $szConfigFileName));
+}
 
 
 # -----------------------------------------------------------------
+#  refhFinishedValues content:
+#     BootDistroName: e.g. fedora
+#     Arch: e.g. x86_64
+#     BootDistroId: e.g. 20
 # ---------------
 sub GetDistributionNode {
   my $xml = shift;
