@@ -15,6 +15,7 @@ use ExecuteAndTrace;
 # Example: 
 
 #  clear; sudo ./bootmgmt.pl add --mac 080027C4D9ED --distro ubuntu --release 1404 --arch x86_64
+#  sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 00:20:75:1c:ad:67 --distro fedora --release 20 --arch x86_64 --media nfs --role kvm_host
 #  clear; sudo ./bootmgmt.pl add --mac 080027600349 --distro fedora --release 20 --arch x86_64 --role yumdownload
 #  clear; sudo ./bootmgmt.pl update --mac 080027346180 --distro fedora --release 20 --arch x86_64 --role vagrant
 #  clear; sudo ./bootmgmt.pl add --mac 080027346180 --distro fedora --release 19 --arch x86_64
