@@ -12,7 +12,7 @@ perl-YAML-LibYAML
 # Tools that I often use.
 mc
 strace
-tcpdmp
+tcpdump
 fuseiso
 fuse
 %PACKAGELISTEND%
