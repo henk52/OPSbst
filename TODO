@@ -1,3 +1,6 @@
+TODO Describe how to install this tool.
+TODO Implement code to add a mirror as a usable repo (F23)
+TOOD Add support for creating a Vagrant base machine.
 TODO Add the missing repo list
   repo --name=f20_x86_64_update --baseurl=nfs:10.1.233.3:/home/ks/repo/linux/updates/20/x86_64
   repo --name=f20_x86_64_os --baseurl=nfs:10.1.233.3:/home/ks/repo/linux/releases/20/Everything/x86_64/os

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Introduction
 
 ## Purpose
@@ -13,9 +12,7 @@ This tools set is used for administrating a linux bootserver.
 * 
 
 
-sudo yum install perl-Test-Harness
-sudo yum install perl-Test-Simple
-perl-Test-Simple
+ puppet apply required_sw.pp 
 
 
 ## Importing a Distro image.
@@ -104,4 +101,3 @@ Support
 -------
 
 Please log tickets and issues at our [Projects site](http://projects.example.com)
->>>>>>> 8161ea4b115fefeb810024d4f2335c5547ca7104
