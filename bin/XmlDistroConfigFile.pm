@@ -9,7 +9,7 @@ use Data::Dumper;
 use BstShortcuts;
 use XmlIf;
 
-$VERSION = 0.2.0;
+$VERSION = 0.3.0;
 @ISA = ('Exporter');
 
 # List the functions and var's that must be available.
@@ -100,6 +100,7 @@ sub CreateArchStructure {
 #                      $hPopulatedOptionList{"--release"},
 #                      $hPopulatedOptionList{"--arch"},
 #                    );
+# Calls GetDistributionNode()
 # ---------------
 sub GetKeyPathsForDistro {
   my $szConfigFileName = shift;
@@ -183,7 +184,66 @@ sub GetReleaseNode {
   }
 
   return($ymlNode);
-} # end GetDistributionNode
+} # end GetReleaseNode.
+
+
+# -----------------------------------------------------------------
+# Create it if it does not exist.
+# ---------------
+sub UpdateDistroConfigFile {
+  my $szFileName = shift;
+  my $refHash = shift;
+
+  confess("!!! Missing filename.") unless(defined($szFileName));
+  confess("!!! Missing hash.") unless(defined($refHash));
+
+  my %hCombinedHash = %{$refHash};
+  print Dumper(\%{$refHash});
+
+  if ( ! -f $szFileName ) {
+    open(XML, ">$szFileName") || confess("!!! could not open file for write: $szFileName - $!");
+    print XML "<Distributions Version=\"0.1.0\">\n";
+    print XML "</Distributions>\n";
+    close(XML);
+  } 
+
+  # if it already exist, then die, otherwise add it.
+  my %hRetrievedHash = GetKeyPathsForDistro($szFileName, $hCombinedHash{'--distro'}, $hCombinedHash{'--release'}, $hCombinedHash{'--arch'});
+  if ( exists($hRetrievedHash{'relative_install_image_path'}) ) {
+    print Dumper(\%hRetrievedHash);
+    confess("EEE The entry already exists");
+  } else {
+    # Add the entry.
+    # TODO V change this to do it through XmlIf, instead of directly.
+    # 
+    # my $szXmlRoot = LoadXmlTree($szFileName);
+    my( $szXmlRoot, $dom ) = LoadXmlStructure($szFileName);
+    #my $node = $dom->createElement( "Distro" );
+    #$element = $dom->createElement( $nodename );
+    my $node = XML::LibXML::Element->new( "Distro" );
+    $node->setAttribute( 'Name', "$hCombinedHash{'--distro'}");
+    $node->setAttribute( 'Version', "$hCombinedHash{'--release'}");
+    $node->setAttribute( 'Architechture', "$hCombinedHash{'--arch'}");
+
+    #my $xmlTextNode = XML::LibXML::Element->new('relative_boot_kernel_path');
+    #$xmlTextNode->setData("$hCombinedHash{'RelativeKernelSource'}");
+    #$node->addChild($xmlTextNode);
+    $node->appendTextChild('relative_boot_kernel_path', "$hCombinedHash{'RelativeKernelSource'}");
+    $node->appendTextChild('relative_install_image_path', "$hCombinedHash{'RelativeKernelSource'}");
+    $node->appendTextChild('relative_additional_packages_path', "$hCombinedHash{'RelativeKernelSource'}");
+    $node->appendTextChild('relative_updates_path', "$hCombinedHash{'RelativeUpdatesPath'}");
+    $szXmlRoot->addChild($node);
+
+
+    print $dom->toString(2);
+    
+    my $format = 1; # will add ignorable white spaces, so the nodes content is easier to read. 
+    # See: http://search.cpan.org/~shlomif/XML-LibXML-2.0123/lib/XML/LibXML/Document.pod
+    $dom->toFile($szFileName, $format);
+    
+  }
+  
+} #end UpdateDistroConfigFile
 
 
 # This ends the perl module/package definition.
