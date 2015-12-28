@@ -13,4 +13,4 @@ my %hFinishedValues;
 
 BscPutConfigDataInHash(\%hFinishedValues);
 
-is($hFinishedValues{BS_DISTRO_CONFIGURATION_FILE}, "/var/ks/distros.yaml", "make sure the BS_DISTRO_CONFIGURATION_FILE is defined.");
+is($hFinishedValues{BS_DISTRO_CONFIGURATION_FILE}, "/var/ks/distros.xml", "make sure the BS_DISTRO_CONFIGURATION_FILE is defined.");
