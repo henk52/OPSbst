@@ -142,8 +142,8 @@ sub DefineInstallMediaKeys {
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
     my $nIndex = 0;
-print "DDD DefineInstallMediaKeys()\n";
-print Dumper(\@{$refhFinishedValues->{'repo_list'}});
+#print "DDD DefineInstallMediaKeys()\n";
+#print Dumper(\@{$refhFinishedValues->{'repo_list'}});
     $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "";
     foreach my $szRelativeRepoPath ( @{$refhFinishedValues->{'repo_list'}} ) {
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "repo --name=local${nIndex} --baseurl=nfs:";
@@ -164,12 +164,17 @@ print Dumper(\@{$refhFinishedValues->{'repo_list'}});
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
-    if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "repo --name=local --baseurl=http://";
+    #if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
+    my $nIndex = 0;
+    $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "";
+    foreach my $szRelativeRepoPath ( @{$refhFinishedValues->{'repo_list'}} ) {
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "repo --name=local${nIndex} --baseurl=http://";
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_extra_repo_path'}";
+      #$refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$szRelativeRepoPath\n";
+      $nIndex++;
     }
 
     $refhFinishedValues->{"relative_ks_cfg_path_and_name"}   .= "_http";
