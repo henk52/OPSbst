@@ -118,7 +118,7 @@ sub CommandHandlingForImport {
   $hCombinedData{'KernelFiles'} = [ 'vmlinuz', 'initrd.img' ];
 
   # Overload hack, to make the ISO file copy work.
-  $hCombinedData{'BS_TMP_MOUNT_POINT'} = $hCombinedData{'BS_RELATIVE_MIRROR_DIRECTORY'};
+  $hCombinedData{'BS_TMP_MOUNT_POINT'} = "$hCombinedData{'BS_NFS_BASE_PATH'}/$hCombinedData{'BS_RELATIVE_MIRROR_DIRECTORY'}";
   # For us in copying the boot kernel files.
   $hCombinedData{'RelativeKernelSource'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Server/$hCombinedData{'Arch'}/os/isolinux";
   # /var/ks/mirrors/fedora23/linux/updates/23/x86_64/

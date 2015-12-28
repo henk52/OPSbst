@@ -162,7 +162,7 @@ sub DefineInstallMediaKeys {
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "url --url=http://";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
+    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
     #if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
     my $nIndex = 0;
