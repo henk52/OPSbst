@@ -15,7 +15,7 @@ use ExecuteAndTrace;
 # Example: 
 
 #  clear; sudo ./bootmgmt.pl add --mac 080027C4D9ED --distro ubuntu --release 1404 --arch x86_64
-#  sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 00:20:75:1c:ad:67 --distro fedora --release 20 --arch x86_64 --media nfs --role kvm_host
+#  sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 00:20:75:1c:ad:67 --distro fedora --release 23 --arch x86_64 --media nfs --role kvm_host
 #  clear; sudo ./bootmgmt.pl add --mac 080027600349 --distro fedora --release 20 --arch x86_64 --role yumdownload
 #  clear; sudo ./bootmgmt.pl update --mac 080027346180 --distro fedora --release 20 --arch x86_64 --role vagrant
 #  clear; sudo ./bootmgmt.pl add --mac 080027346180 --distro fedora --release 19 --arch x86_64
@@ -318,6 +318,8 @@ my %hKeyPaths = GetKeyPathsForDistro(
                       $hPopulatedOptionList{"--release"},
                       $hPopulatedOptionList{"--arch"},
                     );
+print "DDD bootmgmt.pl \n";
+print Dumper(\%hKeyPaths);
 my @arKeyList = ( $f_szTftpBootKernelPath, "relative_install_image_path" );
 foreach my $szKey (@arKeyList) {
   if ( exists( $hKeyPaths{$szKey} ) ) {
@@ -328,6 +330,9 @@ foreach my $szKey (@arKeyList) {
 }
 if ( exists($hKeyPaths{'relative_extra_repo_path'}) ) {
   $hPopulatedOptionList{'relative_extra_repo_path'} = $hKeyPaths{'relative_extra_repo_path'};
+}
+if ( exists($hKeyPaths{'repo_list'}) ) {
+  $hPopulatedOptionList{'repo_list'} = $hKeyPaths{'repo_list'};
 }
 
 my %hCombinedData = ( %hPopulatedOptionList, %f_hFinishedValues);

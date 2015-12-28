@@ -118,10 +118,18 @@ sub CommandHandlingForImport {
   $hCombinedData{'KernelFiles'} = [ 'vmlinuz', 'initrd.img' ];
 
   # Overload hack, to make the ISO file copy work.
-  $hCombinedData{'BS_TMP_MOUNT_POINT'} = $hCombinedData{'BS_MIRROR_BASE_DIRECTORY'};
+  $hCombinedData{'BS_TMP_MOUNT_POINT'} = $hCombinedData{'BS_RELATIVE_MIRROR_DIRECTORY'};
+  # For us in copying the boot kernel files.
   $hCombinedData{'RelativeKernelSource'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Server/$hCombinedData{'Arch'}/os/isolinux";
   # /var/ks/mirrors/fedora23/linux/updates/23/x86_64/
-  $hCombinedData{'RelativeUpdatesPath'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/updates/$hCombinedData{'BootDistroId'}/$hCombinedData{'Arch'}";
+  # Creating the list of repos.
+  $hCombinedData{'RepoNameAndRelativePathHash'} = {};
+  # /var/ks/mirrors/fedora23/linux/releases/23/Everything/x86_64/os/
+  $hCombinedData{'RepoNameAndRelativePathHash'}{'base'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Everything/$hCombinedData{'Arch'}/os";
+  $hCombinedData{'RepoNameAndRelativePathHash'}{'update'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/updates/$hCombinedData{'BootDistroId'}/$hCombinedData{'Arch'}";
+
+  $hCombinedData{'RelativeBootKernelPath'} = "$hCombinedData{'BootDistroName'}_$hCombinedData{'BootDistroId'}_$hCombinedData{'Arch'}";
+
 
   if ( ! -d "$hCombinedData{'BS_TMP_MOUNT_POINT'}/$hCombinedData{'RelativeKernelSource'}" ) {
     die("!!! Directory does not exist: $hCombinedData{'BS_TMP_MOUNT_POINT'}/$hCombinedData{'RelativeKernelSource'}");

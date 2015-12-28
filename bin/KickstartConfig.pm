@@ -104,6 +104,7 @@ sub GenerateKickstartFile {
 
   my $szResult = $template->fill_in(HASH => \%hFinishedValues);
 
+print Dumper(\%hFinishedValues);
 
   if ( defined($szResult) ) {
     print "III Writing the Kickstart config file to: $szDestinationFileName\n";
@@ -137,14 +138,21 @@ sub DefineInstallMediaKeys {
     $refhFinishedValues->{"base_path"}           = $refhFinishedValues->{"BS_NFS_BASE_PATH"};
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "nfs --server=$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= " --dir=$refhFinishedValues->{'BS_NFS_BASE_PATH'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
+    #$refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
+    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
     $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
-    if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "repo --name=local --baseurl=nfs:";
+    my $nIndex = 0;
+print "DDD DefineInstallMediaKeys()\n";
+print Dumper(\@{$refhFinishedValues->{'repo_list'}});
+    $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "";
+    foreach my $szRelativeRepoPath ( @{$refhFinishedValues->{'repo_list'}} ) {
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "repo --name=local${nIndex} --baseurl=nfs:";
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_NFS_BASE_PATH'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_extra_repo_path'}";
+      # TODO C This needs to be fixed, the path only works when I use mirrors. the repo_list should probably include the 'mirrors' dir.
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$szRelativeRepoPath\n";
+      $nIndex++;
     }
     $refhFinishedValues->{'relative_ks_cfg_path_and_name'}   .= "_nfs";
     $szKickstartFile = $refhFinishedValues->{"BS_NFS_BASE_PATH"} . $refhFinishedValues->{"relative_ks_cfg_path_and_name"};

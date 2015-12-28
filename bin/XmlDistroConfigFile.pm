@@ -118,6 +118,7 @@ sub GetKeyPathsForDistro {
 
 
 # -----------------------------------------------------------------
+#  Get the distribution node for the given parms.
 #  refhFinishedValues content:
 #     BootDistroName: e.g. fedora
 #     Arch: e.g. x86_64
@@ -154,8 +155,10 @@ sub GetDistributionNode {
   if ( defined($xmlNode) ) {
     $hReply{'relative_boot_kernel_path'}         = GetChildDataBySingleTagName($xmlNode, "relative_boot_kernel_path");
     $hReply{'relative_install_image_path'}       = GetChildDataBySingleTagName($xmlNode, "relative_install_image_path");
-    $hReply{'relative_additional_packages_path'} = GetChildDataBySingleTagName($xmlNode, "relative_additional_packages_path");
-    $hReply{'relative_updates_path'}             = GetChildDataBySingleTagName($xmlNode, "relative_updates_path");
+    my @arRepoList             = GetDataArrayByTagName($xmlNode, 'repo');
+    $hReply{'repo_list'}       = \@arRepoList;
+print "DDD GetDistributionNode()\n";
+print Dumper(\%hReply);
   }
 
   return(%hReply);
@@ -225,13 +228,16 @@ sub UpdateDistroConfigFile {
     $node->setAttribute( 'Version', "$hCombinedHash{'--release'}");
     $node->setAttribute( 'Architechture', "$hCombinedHash{'--arch'}");
 
-    #my $xmlTextNode = XML::LibXML::Element->new('relative_boot_kernel_path');
-    #$xmlTextNode->setData("$hCombinedHash{'RelativeKernelSource'}");
-    #$node->addChild($xmlTextNode);
-    $node->appendTextChild('relative_boot_kernel_path', "$hCombinedHash{'RelativeKernelSource'}");
+    $node->appendTextChild('relative_boot_kernel_path', "$hCombinedHash{'RelativeBootKernelPath'}");
     $node->appendTextChild('relative_install_image_path', "$hCombinedHash{'RelativeKernelSource'}");
-    $node->appendTextChild('relative_additional_packages_path', "$hCombinedHash{'RelativeKernelSource'}");
-    $node->appendTextChild('relative_updates_path', "$hCombinedHash{'RelativeUpdatesPath'}");
+
+    # Add the list of repos.
+    print Dumper(\%{$hCombinedHash{'RepoNameAndRelativePathHash'}});
+    foreach my $szRepoName (keys %{$hCombinedHash{'RepoNameAndRelativePathHash'}} ) {
+      print "DDD $szRepoName : $hCombinedHash{'RepoNameAndRelativePathHash'}{$szRepoName}\n";
+      # TODO V add a repo name.
+      $node->appendTextChild('repo', "$hCombinedHash{'RepoNameAndRelativePathHash'}{$szRepoName}");
+    }
     $szXmlRoot->addChild($node);
 
 
