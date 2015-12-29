@@ -16,6 +16,8 @@ use Data::Dumper;
 # Example:
 # clear; sudo ./importmirror.pl --distro fedora --release 23 --arch x86_64
 # clear; sudo ./importmirror.pl --distro fedora --release 23 --arch i386
+# clear; sudo ./importmirror.pl --distro fedora --release 20 --arch x86_64
+# clear; sudo ./importmirror.pl --distro fedora --release 20 --arch i386
 
 
 #TODO C add a relative path to the script dir and use it as an include path form modules.
@@ -27,8 +29,6 @@ use IsoInfoFile;
 use KickstartConfig;
 use XmlDistroConfigFile;
 
-# EXAMPLE: ./importiso.rb --combo DIPM /vagrant/isos/DMICRO_SERVER-R03.00.05.05.DISK1.iso
-#          clear;./importiso.rb  --distro fedora --release 20
 
 
 # Guiding moto: Do one thing and do it well.
@@ -119,13 +119,20 @@ sub CommandHandlingForImport {
 
   # Overload hack, to make the ISO file copy work.
   $hCombinedData{'BS_TMP_MOUNT_POINT'} = "$hCombinedData{'BS_NFS_BASE_PATH'}/$hCombinedData{'BS_RELATIVE_MIRROR_DIRECTORY'}";
+
+  my $szKernelPartialDirName = "Server";
+  # This probably needs to to into some sort of hiera(ki) of releases and versions to identify the paths to be used.
+  if ( $hCombinedData{'BootDistroId'} eq "20" ) {
+    $szKernelPartialDirName = "Fedora";
+  }
+
   # For us in copying the boot kernel files.
-  $hCombinedData{'RelativeKernelSource'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Server/$hCombinedData{'Arch'}/os/isolinux";
+  $hCombinedData{'RelativeKernelSource'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/$szKernelPartialDirName/$hCombinedData{'Arch'}/os/isolinux";
   # /var/ks/mirrors/fedora23/linux/updates/23/x86_64/
   # Creating the list of repos.
   $hCombinedData{'RepoNameAndRelativePathHash'} = {};
   # /var/ks/mirrors/fedora23/linux/releases/23/Everything/x86_64/os/
-  $hCombinedData{'RepoNameAndRelativePathHash'}{'base'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Server/$hCombinedData{'Arch'}/os";
+  $hCombinedData{'RepoNameAndRelativePathHash'}{'base'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/$szKernelPartialDirName/$hCombinedData{'Arch'}/os";
   $hCombinedData{'RepoNameAndRelativePathHash'}{'everything'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Everything/$hCombinedData{'Arch'}/os";
   $hCombinedData{'RepoNameAndRelativePathHash'}{'update'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/updates/$hCombinedData{'BootDistroId'}/$hCombinedData{'Arch'}";
 
