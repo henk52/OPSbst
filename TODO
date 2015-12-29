@@ -1,3 +1,14 @@
+TODO get the various puppet modules, required, in the webstorage dir.
+  * http://www.thegeekstuff.com/2009/09/the-ultimate-wget-download-guide-with-15-awesome-examples/
+  * http://www.thegeekstuff.com/2012/07/wget-curl/
+mkdir /var/webstorage/puppet
+cd /var/webstorage/puppet
+wget -O /var/webstorage/puppet/henk52-vagrant_client.zip https://github.com/henk52/henk52-vagrant_client/archive/master.zip
+wget -O /var/webstorage/puppet/henk52-hieraconf.zip  https://github.com/henk52/henk52-hieraconf/archive/master.zip
+wget -O /var/webstorage/puppet/henk52-repo.zip https://github.com/henk52/henk52-repo/archive/master.zip
+
+TODO Turn the roles text files, into perl tmpl files.
+TODO By default enable APCI HT
 TODO Describe how to install this tool.
 TOOD Add support for creating a Vagrant base machine.
 TODO C Sort the REPO names, to that the correct one goes first, the one that has LiveOS in its path.
