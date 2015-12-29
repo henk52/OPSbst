@@ -10,12 +10,13 @@
 + linux/releases/23/Everything/x86_64/
 + linux/releases/23/Everything/x86_64/os/
 + linux/releases/23/Server/
++ linux/releases/23/Server/i386/
++ linux/releases/23/Server/i386/os/
 + linux/releases/23/Server/x86_64/
 + linux/releases/23/Server/x86_64/os/
 + linux/updates/
 + linux/updates/23/
 + linux/updates/23/x86_64/
-+ linux/updates/23/i386/
 - linux/releases/23/Server/x86_64/*
 - linux/releases/23/Server/i386/*
 - linux/releases/23/Server/*
