@@ -125,7 +125,8 @@ sub CommandHandlingForImport {
   # Creating the list of repos.
   $hCombinedData{'RepoNameAndRelativePathHash'} = {};
   # /var/ks/mirrors/fedora23/linux/releases/23/Everything/x86_64/os/
-  $hCombinedData{'RepoNameAndRelativePathHash'}{'base'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Everything/$hCombinedData{'Arch'}/os";
+  $hCombinedData{'RepoNameAndRelativePathHash'}{'base'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Server/$hCombinedData{'Arch'}/os";
+  $hCombinedData{'RepoNameAndRelativePathHash'}{'everything'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/releases/$hCombinedData{'BootDistroId'}/Everything/$hCombinedData{'Arch'}/os";
   $hCombinedData{'RepoNameAndRelativePathHash'}{'update'} = "$hCombinedData{'BootDistroName'}$hCombinedData{'BootDistroId'}/linux/updates/$hCombinedData{'BootDistroId'}/$hCombinedData{'Arch'}";
 
   $hCombinedData{'RelativeBootKernelPath'} = "$hCombinedData{'BootDistroName'}_$hCombinedData{'BootDistroId'}_$hCombinedData{'Arch'}";
