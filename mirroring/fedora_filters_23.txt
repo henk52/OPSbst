@@ -16,6 +16,7 @@
 + linux/releases/23/Server/x86_64/os/
 + linux/updates/
 + linux/updates/23/
++ linux/updates/23/i386
 + linux/updates/23/x86_64/
 - linux/releases/23/Server/x86_64/*
 - linux/releases/23/Server/i386/*
