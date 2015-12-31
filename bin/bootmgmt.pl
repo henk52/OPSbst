@@ -244,7 +244,42 @@ sub CommandHandlingForAdd {
     print "   Translating the external KS to $szKickstartFile\n";
     KscTranslateExternalKsCfgFile(\%hBootConfiguration, $szKickstartFile);
   }
+
+  GenerateDefaultYamlFile(\%hBootConfiguration);
 } # CommandHandlingForAdd.
+
+# -----------------------------------------------------------------
+# ---------------
+sub GenerateDefaultYamlFile {
+  my $refHash = shift || confess("!!! Missing hash with configurations in it.");
+
+  my %hBootConfiguration = %{$refHash};
+
+  #$hBootConfiguration{"BootDistroName"} = $hBootConfiguration{"--distro"};
+  #$hBootConfiguration{"BootDistroId"}   = $hBootConfiguration{"--release"};
+  #$hBootConfiguration{"Architechture"}  = $hBootConfiguration{"--arch"};
+
+  # TODO possibly later use this: $hBootConfiguration{"InstallMedia"}
+
+  # TODO V get this from a config file.
+  my $szWebStorageBaseDir = "/var/webstorage";
+  my $szFullYamlFileName = "$szWebStorageBaseDir/puppet/default_$hBootConfiguration{'BootDistroName'}_$hBootConfiguration{'BootDistroId'}_$hBootConfiguration{'Architechture'}.yaml";
+
+  my $template = Text::Template->new(TYPE => 'FILE', SOURCE => '/opt/OPSbst/templates/default_yaml.tmpl')
+          or die "Couldn't construct template: $Text::Template::ERROR";
+
+  my $szResult = $template->fill_in(HASH => \%hBootConfiguration);
+
+  if ( -f $szFullYamlFileName ) {
+    print "III using existing default yaml file: $szFullYamlFileName\n";
+  } else {
+    print "III Writing default yaml file: $szFullYamlFileName\n";
+    open(YAML, ">$szFullYamlFileName") || confess("!!! Unable to open file for write: $szFullYamlFileName - $!");
+    print YAML $szResult;
+    close(YAML);
+  }
+
+} # end GenerateDefaultYamlFile
 
 # -----------------------------------------------------------------
 # ---------------
