@@ -263,7 +263,7 @@ sub GenerateDefaultYamlFile {
 
   # TODO V get this from a config file.
   my $szWebStorageBaseDir = "/var/webstorage";
-  my $szFullYamlFileName = "$szWebStorageBaseDir/puppet/default_$hBootConfiguration{'BootDistroName'}_$hBootConfiguration{'BootDistroId'}_$hBootConfiguration{'Architechture'}.yaml";
+  my $szFullYamlFileName = "$szWebStorageBaseDir/puppet/defaults_$hBootConfiguration{'BootDistroName'}_$hBootConfiguration{'BootDistroId'}-$hBootConfiguration{'Architechture'}.yaml";
 
   my $template = Text::Template->new(TYPE => 'FILE', SOURCE => '/opt/OPSbst/templates/default_yaml.tmpl')
           or die "Couldn't construct template: $Text::Template::ERROR";
