@@ -1,0 +1,14 @@
+---
+repos:
+{ if ( $#repo_list != -1 ) {
+    my $nIndex = 0;
+    foreach my $szLine (@repo_list) {
+      $OUT .= "  - name: repo${nIndex}\n";
+      $OUT .= "    baseurl: http://${BS_MEDIA_HOST_ADDRESS}:${BS_HTTP_PORT_NUMBER}/${BS_RELATIVE_MIRROR_DIRECTORY}/$szLine\n";
+      $OUT .= "    gpgcheck: 1\n";
+      $OUT .= "    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-${BootDistroName}-\$releasever-\$basearch\n";
+      $nIndex++;
+    }
+  }
+}
+

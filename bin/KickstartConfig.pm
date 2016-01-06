@@ -104,6 +104,7 @@ sub GenerateKickstartFile {
 
   my $szResult = $template->fill_in(HASH => \%hFinishedValues);
 
+print Dumper(\%hFinishedValues);
 
   if ( defined($szResult) ) {
     print "III Writing the Kickstart config file to: $szDestinationFileName\n";
@@ -135,33 +136,42 @@ sub DefineInstallMediaKeys {
   if ( $refhFinishedValues->{"InstallMedia"} eq "nfs" ) {
     $refhFinishedValues->{"install_media_type"}  = "nfs:";
     $refhFinishedValues->{"base_path"}           = $refhFinishedValues->{"BS_NFS_BASE_PATH"};
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "nfs --server=$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= " --dir=$refhFinishedValues->{'BS_NFS_BASE_PATH'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
-    if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "repo --name=local --baseurl=nfs:";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_NFS_BASE_PATH'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_extra_repo_path'}";
+    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "# NOTE: this is no longer used: KS_INSTALL_SOURCE_SELECTION\n";
+    my $nIndex = 0;
+#print "DDD DefineInstallMediaKeys()\n";
+#print Dumper(\@{$refhFinishedValues->{'repo_list'}});
+    $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "nfs --server=$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
+    $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= " --dir=";
+    foreach my $szRelativeRepoPath ( @{$refhFinishedValues->{'repo_list'}} ) {
+      if ( $nIndex > 0 ) {
+        $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "repo --name=local${nIndex} --baseurl=nfs:";
+        $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}:";
+      }
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_NFS_BASE_PATH'}";
+      # TODO C This needs to be fixed, the path only works when I use mirrors. the repo_list should probably include the 'mirrors' dir.
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$szRelativeRepoPath\n";
+      $nIndex++;
     }
     $refhFinishedValues->{'relative_ks_cfg_path_and_name'}   .= "_nfs";
     $szKickstartFile = $refhFinishedValues->{"BS_NFS_BASE_PATH"} . $refhFinishedValues->{"relative_ks_cfg_path_and_name"};
   } elsif ( $refhFinishedValues->{"InstallMedia"} eq "http" ) {
     $refhFinishedValues->{"install_media_type"}  = "http://";
     $refhFinishedValues->{"base_path"}           = ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "url --url=http://";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_IMAGE_DIRECTORY'}";
-    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_install_image_path'}";
-    if ( exists($refhFinishedValues->{'relative_extra_repo_path'}) ) {
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "repo --name=local --baseurl=http://";
+    $refhFinishedValues->{'KS_INSTALL_SOURCE_SELECTION'} = "# NOTE: this is no longer used: KS_INSTALL_SOURCE_SELECTION\n";
+    my $nIndex = 0;
+    $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} = "url --url=http://";
+    foreach my $szRelativeRepoPath ( @{$refhFinishedValues->{'repo_list'}} ) {
+      if ( $nIndex > 0 ) {
+        # after the first entry use 'repo'
+        $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "repo --name=local${nIndex} --baseurl=http://";
+      }
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "$refhFinishedValues->{'BS_MEDIA_HOST_ADDRESS'}";
       $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= ":$refhFinishedValues->{'BS_HTTP_PORT_NUMBER'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
-      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'relative_extra_repo_path'}";
+      #$refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_EXTRA_REPO_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$refhFinishedValues->{'BS_RELATIVE_MIRROR_DIRECTORY'}";
+      $refhFinishedValues->{'KS_REPO_SOURCE_SELECTION'} .= "/$szRelativeRepoPath\n";
+      $nIndex++;
     }
 
     $refhFinishedValues->{"relative_ks_cfg_path_and_name"}   .= "_http";

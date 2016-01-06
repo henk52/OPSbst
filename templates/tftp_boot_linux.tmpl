@@ -6,4 +6,4 @@ timeout 1
 
 label netboot
 kernel {$relative_boot_kernel_path}/vmlinuz
-append initrd={$relative_boot_kernel_path}/initrd.img ks={$install_media_type}{$BS_MEDIA_HOST_ADDRESS}{$base_path}/{$relative_ks_cfg_path_and_name} ramdisk_size=9216 noapic acpi=off selinux=0
+append initrd={$relative_boot_kernel_path}/initrd.img ks={$install_media_type}{$BS_MEDIA_HOST_ADDRESS}{$base_path}/{$relative_ks_cfg_path_and_name} ramdisk_size=9216 noapic acpi=ht selinux=0

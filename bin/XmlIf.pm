@@ -688,9 +688,11 @@ sub GetDataArrayByTagName {
   # Read the Files list
   my @arElementList = $xmlNode->getElementsByTagName($xmlTagName);
   foreach my $szElement (@arElementList) {
+print "DDD GetDataArrayByTagName(): $szElement\n";
     my $szData = $szElement->string_value();
     push(@arReturnList, $szData);
   } #end foreach.
+print Dumper(\@arReturnList);
 
   return(@arReturnList);
 } # end getdataarraybytagname.

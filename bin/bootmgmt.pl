@@ -15,7 +15,7 @@ use ExecuteAndTrace;
 # Example: 
 
 #  clear; sudo ./bootmgmt.pl add --mac 080027C4D9ED --distro ubuntu --release 1404 --arch x86_64
-#  sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 00:20:75:1c:ad:67 --distro fedora --release 20 --arch x86_64 --media nfs --role kvm_host
+#  sudo /opt/OPSbst/bin/bootmgmt.pl update --mac 00:20:75:1c:ad:67 --distro fedora --release 23 --arch x86_64 --media nfs --role kvm_host
 #  clear; sudo ./bootmgmt.pl add --mac 080027600349 --distro fedora --release 20 --arch x86_64 --role yumdownload
 #  clear; sudo ./bootmgmt.pl update --mac 080027346180 --distro fedora --release 20 --arch x86_64 --role vagrant
 #  clear; sudo ./bootmgmt.pl add --mac 080027346180 --distro fedora --release 19 --arch x86_64
@@ -244,7 +244,42 @@ sub CommandHandlingForAdd {
     print "   Translating the external KS to $szKickstartFile\n";
     KscTranslateExternalKsCfgFile(\%hBootConfiguration, $szKickstartFile);
   }
+
+  GenerateDefaultYamlFile(\%hBootConfiguration);
 } # CommandHandlingForAdd.
+
+# -----------------------------------------------------------------
+# ---------------
+sub GenerateDefaultYamlFile {
+  my $refHash = shift || confess("!!! Missing hash with configurations in it.");
+
+  my %hBootConfiguration = %{$refHash};
+
+  #$hBootConfiguration{"BootDistroName"} = $hBootConfiguration{"--distro"};
+  #$hBootConfiguration{"BootDistroId"}   = $hBootConfiguration{"--release"};
+  #$hBootConfiguration{"Architechture"}  = $hBootConfiguration{"--arch"};
+
+  # TODO possibly later use this: $hBootConfiguration{"InstallMedia"}
+
+  # TODO V get this from a config file.
+  my $szWebStorageBaseDir = "/var/webstorage";
+  my $szFullYamlFileName = "$szWebStorageBaseDir/puppet/default_$hBootConfiguration{'BootDistroName'}_$hBootConfiguration{'BootDistroId'}_$hBootConfiguration{'Architechture'}.yaml";
+
+  my $template = Text::Template->new(TYPE => 'FILE', SOURCE => '/opt/OPSbst/templates/default_yaml.tmpl')
+          or die "Couldn't construct template: $Text::Template::ERROR";
+
+  my $szResult = $template->fill_in(HASH => \%hBootConfiguration);
+
+  if ( -f $szFullYamlFileName ) {
+    print "III using existing default yaml file: $szFullYamlFileName\n";
+  } else {
+    print "III Writing default yaml file: $szFullYamlFileName\n";
+    open(YAML, ">$szFullYamlFileName") || confess("!!! Unable to open file for write: $szFullYamlFileName - $!");
+    print YAML $szResult;
+    close(YAML);
+  }
+
+} # end GenerateDefaultYamlFile
 
 # -----------------------------------------------------------------
 # ---------------
@@ -318,6 +353,8 @@ my %hKeyPaths = GetKeyPathsForDistro(
                       $hPopulatedOptionList{"--release"},
                       $hPopulatedOptionList{"--arch"},
                     );
+print "DDD bootmgmt.pl \n";
+print Dumper(\%hKeyPaths);
 my @arKeyList = ( $f_szTftpBootKernelPath, "relative_install_image_path" );
 foreach my $szKey (@arKeyList) {
   if ( exists( $hKeyPaths{$szKey} ) ) {
@@ -328,6 +365,9 @@ foreach my $szKey (@arKeyList) {
 }
 if ( exists($hKeyPaths{'relative_extra_repo_path'}) ) {
   $hPopulatedOptionList{'relative_extra_repo_path'} = $hKeyPaths{'relative_extra_repo_path'};
+}
+if ( exists($hKeyPaths{'repo_list'}) ) {
+  $hPopulatedOptionList{'repo_list'} = $hKeyPaths{'repo_list'};
 }
 
 my %hCombinedData = ( %hPopulatedOptionList, %f_hFinishedValues);
