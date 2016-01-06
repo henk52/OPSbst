@@ -14,3 +14,4 @@ TODO Support Solaris x86
 TODO Support Ubuntu
 TODO Support FreeBSD
 TODO Generate a KS cfg that supports CentOS 6.5 (use @core instead of @standard).
+TODO add unzip to list of tools on all roles.

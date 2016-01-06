@@ -101,9 +101,10 @@ sub CommandHandlingForImport {
 #print Dumper(%hPopulatedOptionList);
 #print "---\n";
 #print Dumper(%hFinishedValues);
+#print Dumper(\%hCombinedData);
 
   if ( ! -f $hCombinedData{"IsoImageName"} ) {
-    die("!!! Please provide a valid mount point: " . $hCombinedData{"IsoImageName"});
+    die("!!! ISO image does not exist: " . $hCombinedData{"IsoImageName"});
   }
 
   DieIfIsoAlreadyMounted(\%hCombinedData);
