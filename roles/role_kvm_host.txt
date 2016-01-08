@@ -23,7 +23,7 @@ cd /etc/puppet/modules
 git clone http://10.1.233.3:/git/henk52-hieraconf.git hieraconf
 puppet apply /etc/puppet/modules/hieraconf/tests/init.pp
 cd /etc/puppet/data
-wget http://10.1.233.3:/storage/puppet/defaults.yaml
+wget -O /etc/puppet/data/defaults.yaml http://10.1.233.3:/storage/puppet/defaults.yaml
 %POSTEND%
 
 %POSTBEGIN%
@@ -36,6 +36,6 @@ puppet apply /etc/puppet/modules/repo/tests/init.pp
 %POSTBEGIN%
 # Getting and executing the puppet module for the virtualbox host installation
 cd /etc/puppet/modules
-git clone http://10.1.233.3:/git/henk52-kvm-host kvm-host
-#puppet apply /etc/puppet/modules/kvm-host/manifests/install.pp
+git clone http://10.1.233.3:/git/henk52-kvm-host.git kvm_host
+puppet apply /etc/puppet/modules/kvm-host/manifests/install.pp
 %POSTEND%
