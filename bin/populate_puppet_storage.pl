@@ -36,6 +36,4 @@ UpdateArchive("https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-4.10.0
 UpdateArchive("https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apache-1.7.1.tar.gz?_ga=1.211439635.703514436.1444930369", "puppetlabs-apache-1.7.1.tar.gz", "puppetlabs-apache.tar.gz");
 UpdateArchive("https://forgeapi.puppetlabs.com/v3/files/dwerder-graphite-5.15.0.tar.gz?_ga=1.249403009.703514436.1444930369", "dwerder-graphite-5.15.0.tar.gz", "dwerder-graphite.tar.gz");
 UpdateArchive("https://forgeapi.puppetlabs.com/v3/files/puppetlabs-concat-1.2.5.tar.gz?_ga=1.247656449.703514436.1444930369", "puppetlabs-concat-1.2.5.tar.gz", "puppetlabs-concat.tar.gz");
-
-
-
+UpdateArchive("https://forgeapi.puppetlabs.com/v3/files/razorsedge-network-3.6.0.tar.gz?_ga=1.25717309.1261433395.1427318039", "razorsedge-network-3.6.0.tar.gz");

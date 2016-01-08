@@ -20,22 +20,37 @@ fuse
 %POSTBEGIN%
 #Get the hiera module and write the default hiera configuration.
 cd /etc/puppet/modules
-git clone http://10.1.233.3:/git/henk52-hieraconf.git hieraconf
+git clone http://dm:/git/henk52-hieraconf.git hieraconf
 puppet apply /etc/puppet/modules/hieraconf/tests/init.pp
 cd /etc/puppet/data
-wget -O /etc/puppet/data/defaults.yaml http://10.1.233.3:/storage/puppet/defaults.yaml
+wget -O /etc/puppet/data/defaults.yaml http://dm:/storage/puppet/defaults.yaml
 %POSTEND%
 
 %POSTBEGIN%
 # Configure the repository configuration.
 cd /etc/puppet/modules
-git clone http://10.1.233.3:/git/henk52-repo.git repo
+git clone http://dm:/git/henk52-repo.git repo
 puppet apply /etc/puppet/modules/repo/tests/init.pp 
 %POSTEND%
 
 %POSTBEGIN%
 # Getting and executing the puppet module for the virtualbox host installation
 cd /etc/puppet/modules
-git clone http://10.1.233.3:/git/henk52-kvm-host.git kvm_host
+git clone http://dm:/git/henk52-kvm-host.git kvm_host
 puppet apply /etc/puppet/modules/kvm-host/manifests/install.pp
 %POSTEND%
+
+%POSTBEGIN%
+cd /etc/puppet/modules
+wget http://dm:/storage/puppet/razorsedge-network-3.6.0.tar.gz
+tar -zxf razorsedge-network-3.6.0.tar.gz
+ln -s razorsedge-network-3.6.0 network
+%POSTEND%
+
+%POSTBEGIN%
+cd /etc/puppet/modules
+wget http://dm:/storage/puppet/puppetlabs-stdlib-4.10.0.tar.gz
+tar -zxf puppetlabs-stdlib-4.10.0.tar.gz
+ln -s puppetlabs-stdlib-4.10.0 stdlib
+%POSTEND%
+
