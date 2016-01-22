@@ -1,0 +1,1 @@
+wget --no-parent -r http://yum.spacewalkproject.org/2.4/Fedora/22/x86_64/
